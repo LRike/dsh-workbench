@@ -1,5 +1,9 @@
 # 个人任务工作台（DSH 插件）
 
+> **状态：0.1.0 · 个人使用 · 无预编译发布。** 仓库不含打好的包，拿到源码后跑 `./pack` 生成
+> `dist/local-dsh-workbench-0.1.0.tgz` 再安装。接口与数据格式仍可能调整（已有 schemaVersion 迁移机制）。
+> 许可证：MIT（见文末）。
+
 把「项目 → 议题 → 工作单元 → 多轮对话 → 收尾交接 → 验收」这条流水线搬进 DeepSeek Harness：
 侧栏多一个「工作台」入口，用一个本地 JSON 文件记住所有状态，宿主提供 HTTP 读接口与命令，
 浏览器渲染五个视图，另外给 AI 注册 9 个受约束的工具。
@@ -73,6 +77,12 @@ npm run check       # 语法 + tsc + client 构建一致性
 scripts/verify-*.sh # 各层门禁（S1/S2/E2E/Phase3/UI 120+ 断言/健壮性）
 ```
 
-## 状态
+## 许可证
 
-`0.1.0` —— 个人使用；接口与数据格式仍可能按需调整（schemaVersion 已有迁移机制）。
+[MIT](LICENSE) © 2026 LRike
+
+## 相关
+
+- 数据模型与规则：`host/domain/`（状态机、R1/R4 规则、决策 GC）
+- 门禁与验收：`scripts/verify-*.sh`（S1/S2/E2E/Phase3/UI/健壮性）
+- 打包：`./pack` 或 `npm run pack`
