@@ -1,0 +1,5 @@
+# Workbench bundle patch: one host row. The package also declares dsh.client,
+# so the modules node half puts the browser half on the page roster.
+- insert:
+    - id: workbench
+      name: '@local/dsh-workbench'

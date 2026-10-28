@@ -1,0 +1,6 @@
+#!/bin/sh
+# One-command packaging: ./pack  (same as `npm run pack`)
+# Builds client.js from client-src/, then produces dist/local-dsh-workbench-<version>.tgz
+# together with its .sha256 and a ready-to-paste install line.
+set -eu
+exec sh "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/scripts/pack.sh" "$@"

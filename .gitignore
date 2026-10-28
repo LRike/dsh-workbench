@@ -1,0 +1,16 @@
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+*.iml
+
+# dependencies (this plugin has none, but never commit them)
+node_modules/
+
+# build output: everything under dist/ is produced locally by ./pack
+dist/
+local-dsh-workbench-*.tgz
+
+# gate output / screenshots written by verify scripts
+docs/loop/
+*.log

@@ -1,0 +1,869 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "createdAt": "2026-10-26T09:02:00.000Z",
+    "updatedAt": "2026-10-26T10:45:00.000Z",
+    "rev": 35,
+    "nextIssueNo": 9,
+    "nextActivitySeq": 44,
+    "writer": null
+  },
+  "projects": [
+    {
+      "projectId": "p1",
+      "name": "P1 工作台核心",
+      "defaultWorkspacePath": "/tmp/wb-fixture/projA",
+      "createdAt": "2026-10-26T09:04:00.000Z",
+      "updatedAt": "2026-10-26T09:04:00.000Z",
+      "archivedAt": null,
+      "activities": [
+        {
+          "seq": 1,
+          "at": "2026-10-26T09:04:00.000Z",
+          "actor": "human",
+          "type": "project.created",
+          "text": "新建项目：P1 工作台核心",
+          "data": {
+            "projectId": "p1"
+          }
+        }
+      ]
+    },
+    {
+      "projectId": "p2",
+      "name": "P2 收尾项目",
+      "defaultWorkspacePath": null,
+      "createdAt": "2026-10-26T09:07:00.000Z",
+      "updatedAt": "2026-10-26T09:07:00.000Z",
+      "archivedAt": null,
+      "activities": [
+        {
+          "seq": 2,
+          "at": "2026-10-26T09:07:00.000Z",
+          "actor": "human",
+          "type": "project.created",
+          "text": "新建项目：P2 收尾项目",
+          "data": {
+            "projectId": "p2"
+          }
+        }
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "issueId": "WB-1",
+      "isTriaged": true,
+      "triagedAt": "2026-10-26T09:13:00.000Z",
+      "projectId": "p1",
+      "workspacePath": "/tmp/wb-fixture/projA",
+      "title": "完成收尾的议题：把工作台收尾",
+      "description": "",
+      "acceptanceCriteria": [
+        {
+          "id": "ac01",
+          "text": "收尾标准一",
+          "done": true,
+          "doneAt": "2026-10-26T09:28:00.000Z"
+        },
+        {
+          "id": "ac02",
+          "text": "收尾标准二",
+          "done": true,
+          "doneAt": "2026-10-26T09:31:00.000Z"
+        }
+      ],
+      "status": "done",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": null,
+      "createdAt": "2026-10-26T09:10:00.000Z",
+      "updatedAt": "2026-10-26T09:34:00.000Z",
+      "activities": [
+        {
+          "seq": 3,
+          "at": "2026-10-26T09:10:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：完成收尾的议题：把工作台收尾",
+          "data": {
+            "issueId": "WB-1"
+          }
+        },
+        {
+          "seq": 4,
+          "at": "2026-10-26T09:13:00.000Z",
+          "actor": "human",
+          "type": "issue.triaged",
+          "text": "立项：完成收尾的议题：把工作台收尾",
+          "data": {
+            "projectId": "p1",
+            "acceptance": 2
+          }
+        },
+        {
+          "seq": 5,
+          "at": "2026-10-26T09:16:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 1 轮单元：完成收尾的议题：把工作台收尾",
+          "data": {
+            "unitId": "u01",
+            "sessionId": "session-wb01-a"
+          }
+        },
+        {
+          "seq": 6,
+          "at": "2026-10-26T09:16:00.000Z",
+          "actor": "system",
+          "type": "issue.status_auto",
+          "text": "补挂已结束的会话",
+          "data": {
+            "from": "todo",
+            "to": "in_review",
+            "unitId": "u01"
+          }
+        },
+        {
+          "seq": 7,
+          "at": "2026-10-26T09:16:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 1 轮",
+          "data": {
+            "unitId": "u01",
+            "sessionId": "session-wb01-a"
+          }
+        },
+        {
+          "seq": 8,
+          "at": "2026-10-26T09:19:00.000Z",
+          "actor": "human",
+          "type": "unit.accepted",
+          "text": "通过第 1 轮",
+          "data": {
+            "unitId": "u01"
+          }
+        },
+        {
+          "seq": 9,
+          "at": "2026-10-26T09:22:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 2 轮单元：完成收尾的议题：把工作台收尾",
+          "data": {
+            "unitId": "u02",
+            "sessionId": "session-wb01-b"
+          }
+        },
+        {
+          "seq": 10,
+          "at": "2026-10-26T09:22:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 2 轮",
+          "data": {
+            "unitId": "u02",
+            "sessionId": "session-wb01-b"
+          }
+        },
+        {
+          "seq": 11,
+          "at": "2026-10-26T09:25:00.000Z",
+          "actor": "human",
+          "type": "unit.voided",
+          "text": "作废第 2 轮",
+          "data": {
+            "unitId": "u02",
+            "reason": "retried"
+          }
+        },
+        {
+          "seq": 12,
+          "at": "2026-10-26T09:34:00.000Z",
+          "actor": "human",
+          "type": "issue.completed",
+          "text": "终验收完成",
+          "data": {
+            "unmet": 0,
+            "note": null
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-2",
+      "isTriaged": true,
+      "triagedAt": "2026-10-26T09:40:00.000Z",
+      "projectId": "p1",
+      "workspacePath": "/tmp/wb-fixture/projA",
+      "title": "等你确认的议题：标准只勾了一条",
+      "description": "",
+      "acceptanceCriteria": [
+        {
+          "id": "ac03",
+          "text": "已满足的标准",
+          "done": true,
+          "doneAt": "2026-10-26T09:55:00.000Z"
+        },
+        {
+          "id": "ac04",
+          "text": "未满足的标准一",
+          "done": false,
+          "doneAt": null
+        },
+        {
+          "id": "ac05",
+          "text": "未满足的标准二",
+          "done": false,
+          "doneAt": null
+        }
+      ],
+      "status": "in_review",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": {
+        "from": "todo",
+        "to": "in_review",
+        "at": "2026-10-26T09:43:00.000Z",
+        "activitySeq": 16
+      },
+      "createdAt": "2026-10-26T09:37:00.000Z",
+      "updatedAt": "2026-10-26T09:55:00.000Z",
+      "activities": [
+        {
+          "seq": 13,
+          "at": "2026-10-26T09:37:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：等你确认的议题：标准只勾了一条",
+          "data": {
+            "issueId": "WB-2"
+          }
+        },
+        {
+          "seq": 14,
+          "at": "2026-10-26T09:40:00.000Z",
+          "actor": "human",
+          "type": "issue.triaged",
+          "text": "立项：等你确认的议题：标准只勾了一条",
+          "data": {
+            "projectId": "p1",
+            "acceptance": 3
+          }
+        },
+        {
+          "seq": 15,
+          "at": "2026-10-26T09:43:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 1 轮单元：等你确认的议题：标准只勾了一条",
+          "data": {
+            "unitId": "u03",
+            "sessionId": "session-wb02-a"
+          }
+        },
+        {
+          "seq": 16,
+          "at": "2026-10-26T09:43:00.000Z",
+          "actor": "system",
+          "type": "issue.status_auto",
+          "text": "补挂已结束的会话",
+          "data": {
+            "from": "todo",
+            "to": "in_review",
+            "unitId": "u03"
+          }
+        },
+        {
+          "seq": 17,
+          "at": "2026-10-26T09:43:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 1 轮",
+          "data": {
+            "unitId": "u03",
+            "sessionId": "session-wb02-a"
+          }
+        },
+        {
+          "seq": 18,
+          "at": "2026-10-26T09:46:00.000Z",
+          "actor": "human",
+          "type": "unit.accepted",
+          "text": "通过第 1 轮",
+          "data": {
+            "unitId": "u03"
+          }
+        },
+        {
+          "seq": 19,
+          "at": "2026-10-26T09:49:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 2 轮单元：等你确认的议题：标准只勾了一条",
+          "data": {
+            "unitId": "u04",
+            "sessionId": "session-wb02-b"
+          }
+        },
+        {
+          "seq": 20,
+          "at": "2026-10-26T09:49:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 2 轮",
+          "data": {
+            "unitId": "u04",
+            "sessionId": "session-wb02-b"
+          }
+        },
+        {
+          "seq": 21,
+          "at": "2026-10-26T09:52:00.000Z",
+          "actor": "human",
+          "type": "unit.accepted",
+          "text": "通过第 2 轮",
+          "data": {
+            "unitId": "u04"
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-3",
+      "isTriaged": true,
+      "triagedAt": "2026-10-26T10:01:00.000Z",
+      "projectId": "p1",
+      "workspacePath": "/tmp/wb-fixture/projA",
+      "title": "处理中的议题：有一个在跑单元",
+      "description": "",
+      "acceptanceCriteria": [
+        {
+          "id": "ac06",
+          "text": "处理中标准",
+          "done": false,
+          "doneAt": null
+        }
+      ],
+      "status": "in_progress",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": {
+        "from": "todo",
+        "to": "in_progress",
+        "at": "2026-10-26T10:04:00.000Z",
+        "activitySeq": 25
+      },
+      "createdAt": "2026-10-26T09:58:00.000Z",
+      "updatedAt": "2026-10-26T10:04:00.000Z",
+      "activities": [
+        {
+          "seq": 22,
+          "at": "2026-10-26T09:58:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：处理中的议题：有一个在跑单元",
+          "data": {
+            "issueId": "WB-3"
+          }
+        },
+        {
+          "seq": 23,
+          "at": "2026-10-26T10:01:00.000Z",
+          "actor": "human",
+          "type": "issue.triaged",
+          "text": "立项：处理中的议题：有一个在跑单元",
+          "data": {
+            "projectId": "p1",
+            "acceptance": 1
+          }
+        },
+        {
+          "seq": 24,
+          "at": "2026-10-26T10:04:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 1 轮单元：处理中的议题：有一个在跑单元",
+          "data": {
+            "unitId": "u05",
+            "sessionId": "session-wb03-a"
+          }
+        },
+        {
+          "seq": 25,
+          "at": "2026-10-26T10:04:00.000Z",
+          "actor": "system",
+          "type": "issue.status_auto",
+          "text": "认领会话",
+          "data": {
+            "from": "todo",
+            "to": "in_progress",
+            "unitId": "u05"
+          }
+        },
+        {
+          "seq": 26,
+          "at": "2026-10-26T10:04:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 1 轮",
+          "data": {
+            "unitId": "u05",
+            "sessionId": "session-wb03-a"
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-4",
+      "isTriaged": true,
+      "triagedAt": "2026-10-26T10:13:00.000Z",
+      "projectId": "p1",
+      "workspacePath": "/tmp/wb-fixture/projA",
+      "title": "遇到阻碍的议题：单元异常结束",
+      "description": "",
+      "acceptanceCriteria": [
+        {
+          "id": "ac07",
+          "text": "阻碍标准",
+          "done": false,
+          "doneAt": null
+        }
+      ],
+      "status": "blocked",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": {
+        "from": "in_progress",
+        "to": "blocked",
+        "at": "2026-10-26T10:19:00.000Z",
+        "activitySeq": 33
+      },
+      "createdAt": "2026-10-26T10:10:00.000Z",
+      "updatedAt": "2026-10-26T10:19:00.000Z",
+      "activities": [
+        {
+          "seq": 27,
+          "at": "2026-10-26T10:10:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：遇到阻碍的议题：单元异常结束",
+          "data": {
+            "issueId": "WB-4"
+          }
+        },
+        {
+          "seq": 28,
+          "at": "2026-10-26T10:13:00.000Z",
+          "actor": "human",
+          "type": "issue.triaged",
+          "text": "立项：遇到阻碍的议题：单元异常结束",
+          "data": {
+            "projectId": "p1",
+            "acceptance": 1
+          }
+        },
+        {
+          "seq": 29,
+          "at": "2026-10-26T10:16:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 1 轮单元：遇到阻碍的议题：单元异常结束",
+          "data": {
+            "unitId": "u06",
+            "sessionId": "session-wb04-a"
+          }
+        },
+        {
+          "seq": 30,
+          "at": "2026-10-26T10:16:00.000Z",
+          "actor": "system",
+          "type": "issue.status_auto",
+          "text": "认领会话",
+          "data": {
+            "from": "todo",
+            "to": "in_progress",
+            "unitId": "u06"
+          }
+        },
+        {
+          "seq": 31,
+          "at": "2026-10-26T10:16:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 1 轮",
+          "data": {
+            "unitId": "u06",
+            "sessionId": "session-wb04-a"
+          }
+        },
+        {
+          "seq": 32,
+          "at": "2026-10-26T10:19:00.000Z",
+          "actor": "system",
+          "type": "unit.abnormal",
+          "text": "第 1 轮异常结束（error）",
+          "data": {
+            "unitId": "u06",
+            "exitReason": "error"
+          }
+        },
+        {
+          "seq": 33,
+          "at": "2026-10-26T10:19:00.000Z",
+          "actor": "system",
+          "type": "issue.status_auto",
+          "text": "第 1 轮异常结束，进入遇到阻碍",
+          "data": {
+            "from": "in_progress",
+            "to": "blocked",
+            "unitId": "u06"
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-5",
+      "isTriaged": true,
+      "triagedAt": "2026-10-26T10:25:00.000Z",
+      "projectId": "p2",
+      "workspacePath": null,
+      "title": "待认领但没有工作区的议题",
+      "description": "",
+      "acceptanceCriteria": [
+        {
+          "id": "ac08",
+          "text": "无工作区标准",
+          "done": false,
+          "doneAt": null
+        }
+      ],
+      "status": "todo",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": null,
+      "createdAt": "2026-10-26T10:22:00.000Z",
+      "updatedAt": "2026-10-26T10:25:00.000Z",
+      "activities": [
+        {
+          "seq": 34,
+          "at": "2026-10-26T10:22:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：待认领但没有工作区的议题",
+          "data": {
+            "issueId": "WB-5"
+          }
+        },
+        {
+          "seq": 35,
+          "at": "2026-10-26T10:25:00.000Z",
+          "actor": "human",
+          "type": "issue.triaged",
+          "text": "立项：待认领但没有工作区的议题",
+          "data": {
+            "projectId": "p2",
+            "acceptance": 1
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-6",
+      "isTriaged": true,
+      "triagedAt": "2026-10-26T10:31:00.000Z",
+      "projectId": "p2",
+      "workspacePath": "/tmp/wb-fixture/projA",
+      "title": "已取消的议题",
+      "description": "",
+      "acceptanceCriteria": [
+        {
+          "id": "ac09",
+          "text": "取消标准",
+          "done": false,
+          "doneAt": null
+        }
+      ],
+      "status": "cancelled",
+      "archivedAt": null,
+      "statusPin": {
+        "at": "2026-10-26T10:37:00.000Z"
+      },
+      "statusUndo": null,
+      "createdAt": "2026-10-26T10:28:00.000Z",
+      "updatedAt": "2026-10-26T10:37:00.000Z",
+      "activities": [
+        {
+          "seq": 36,
+          "at": "2026-10-26T10:28:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：已取消的议题",
+          "data": {
+            "issueId": "WB-6"
+          }
+        },
+        {
+          "seq": 37,
+          "at": "2026-10-26T10:31:00.000Z",
+          "actor": "human",
+          "type": "issue.triaged",
+          "text": "立项：已取消的议题",
+          "data": {
+            "projectId": "p2",
+            "acceptance": 1
+          }
+        },
+        {
+          "seq": 38,
+          "at": "2026-10-26T10:34:00.000Z",
+          "actor": "human",
+          "type": "unit.created",
+          "text": "新建第 1 轮单元：已取消的议题",
+          "data": {
+            "unitId": "u07",
+            "sessionId": "session-wb06-a"
+          }
+        },
+        {
+          "seq": 39,
+          "at": "2026-10-26T10:34:00.000Z",
+          "actor": "system",
+          "type": "issue.status_auto",
+          "text": "认领会话",
+          "data": {
+            "from": "todo",
+            "to": "in_progress",
+            "unitId": "u07"
+          }
+        },
+        {
+          "seq": 40,
+          "at": "2026-10-26T10:34:00.000Z",
+          "actor": "human",
+          "type": "unit.claimed",
+          "text": "认领会话第 1 轮",
+          "data": {
+            "unitId": "u07",
+            "sessionId": "session-wb06-a"
+          }
+        },
+        {
+          "seq": 41,
+          "at": "2026-10-26T10:37:00.000Z",
+          "actor": "human",
+          "type": "issue.cancelled",
+          "text": "取消议题，停止 1 个在飞单元",
+          "data": {
+            "from": "in_progress",
+            "stopped": [
+              "u07"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-7",
+      "isTriaged": false,
+      "triagedAt": null,
+      "projectId": null,
+      "workspacePath": null,
+      "title": "把工作台跑通：准备阶段三验收",
+      "description": "",
+      "acceptanceCriteria": [],
+      "status": "todo",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": null,
+      "createdAt": "2026-10-26T10:40:00.000Z",
+      "updatedAt": "2026-10-26T10:40:00.000Z",
+      "activities": [
+        {
+          "seq": 42,
+          "at": "2026-10-26T10:40:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：把工作台跑通：准备阶段三验收",
+          "data": {
+            "issueId": "WB-7"
+          }
+        }
+      ]
+    },
+    {
+      "issueId": "WB-8",
+      "isTriaged": false,
+      "triagedAt": null,
+      "projectId": null,
+      "workspacePath": null,
+      "title": "把工作台跑通：准备阶段三验收（重复）",
+      "description": "",
+      "acceptanceCriteria": [],
+      "status": "todo",
+      "archivedAt": null,
+      "statusPin": null,
+      "statusUndo": null,
+      "createdAt": "2026-10-26T10:43:00.000Z",
+      "updatedAt": "2026-10-26T10:43:00.000Z",
+      "activities": [
+        {
+          "seq": 43,
+          "at": "2026-10-26T10:43:00.000Z",
+          "actor": "human",
+          "type": "todo.created",
+          "text": "记下 TODO：把工作台跑通：准备阶段三验收（重复）",
+          "data": {
+            "issueId": "WB-8"
+          }
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "unitId": "u01",
+      "issueId": "WB-1",
+      "roundNo": 1,
+      "parentUnitId": null,
+      "goal": "完成收尾的议题：把工作台收尾",
+      "sessionId": "session-wb01-a",
+      "execState": "ended",
+      "acceptState": "passed",
+      "voided": false,
+      "exitReason": "normal",
+      "closeReason": null,
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T09:16:00.000Z",
+      "endedAt": "2026-10-26T09:16:00.000Z",
+      "createdAt": "2026-10-26T09:16:00.000Z",
+      "updatedAt": "2026-10-26T09:19:00.000Z"
+    },
+    {
+      "unitId": "u02",
+      "issueId": "WB-1",
+      "roundNo": 2,
+      "parentUnitId": null,
+      "goal": "完成收尾的议题：把工作台收尾",
+      "sessionId": "session-wb01-b",
+      "execState": "ended",
+      "acceptState": "pending",
+      "voided": true,
+      "exitReason": "normal",
+      "closeReason": "retried",
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T09:22:00.000Z",
+      "endedAt": "2026-10-26T09:22:00.000Z",
+      "createdAt": "2026-10-26T09:22:00.000Z",
+      "updatedAt": "2026-10-26T09:25:00.000Z"
+    },
+    {
+      "unitId": "u03",
+      "issueId": "WB-2",
+      "roundNo": 1,
+      "parentUnitId": null,
+      "goal": "等你确认的议题：标准只勾了一条",
+      "sessionId": "session-wb02-a",
+      "execState": "ended",
+      "acceptState": "passed",
+      "voided": false,
+      "exitReason": "normal",
+      "closeReason": null,
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T09:43:00.000Z",
+      "endedAt": "2026-10-26T09:43:00.000Z",
+      "createdAt": "2026-10-26T09:43:00.000Z",
+      "updatedAt": "2026-10-26T09:46:00.000Z"
+    },
+    {
+      "unitId": "u04",
+      "issueId": "WB-2",
+      "roundNo": 2,
+      "parentUnitId": null,
+      "goal": "等你确认的议题：标准只勾了一条",
+      "sessionId": "session-wb02-b",
+      "execState": "ended",
+      "acceptState": "passed",
+      "voided": false,
+      "exitReason": "normal",
+      "closeReason": null,
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T09:49:00.000Z",
+      "endedAt": "2026-10-26T09:49:00.000Z",
+      "createdAt": "2026-10-26T09:49:00.000Z",
+      "updatedAt": "2026-10-26T09:52:00.000Z"
+    },
+    {
+      "unitId": "u05",
+      "issueId": "WB-3",
+      "roundNo": 1,
+      "parentUnitId": null,
+      "goal": "处理中的议题：有一个在跑单元",
+      "sessionId": "session-wb03-a",
+      "execState": "running",
+      "acceptState": "pending",
+      "voided": false,
+      "exitReason": null,
+      "closeReason": null,
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T10:04:00.000Z",
+      "endedAt": null,
+      "createdAt": "2026-10-26T10:04:00.000Z",
+      "updatedAt": "2026-10-26T10:07:00.000Z",
+      "lastEventAt": "2026-10-26T10:07:00.000Z"
+    },
+    {
+      "unitId": "u06",
+      "issueId": "WB-4",
+      "roundNo": 1,
+      "parentUnitId": null,
+      "goal": "遇到阻碍的议题：单元异常结束",
+      "sessionId": "session-wb04-a",
+      "execState": "failed",
+      "acceptState": "pending",
+      "voided": false,
+      "exitReason": "error",
+      "closeReason": null,
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T10:16:00.000Z",
+      "endedAt": "2026-10-26T10:19:00.000Z",
+      "createdAt": "2026-10-26T10:16:00.000Z",
+      "updatedAt": "2026-10-26T10:19:00.000Z",
+      "lastEventAt": "2026-10-26T10:19:00.000Z"
+    },
+    {
+      "unitId": "u07",
+      "issueId": "WB-6",
+      "roundNo": 1,
+      "parentUnitId": null,
+      "goal": "已取消的议题",
+      "sessionId": "session-wb06-a",
+      "execState": "running",
+      "acceptState": "pending",
+      "voided": true,
+      "exitReason": "cancelled_by_user",
+      "closeReason": "cancelled",
+      "setupIssue": null,
+      "handover": null,
+      "createdBy": "human",
+      "startedAt": "2026-10-26T10:34:00.000Z",
+      "endedAt": null,
+      "createdAt": "2026-10-26T10:34:00.000Z",
+      "updatedAt": "2026-10-26T10:37:00.000Z"
+    }
+  ],
+  "decisions": []
+}

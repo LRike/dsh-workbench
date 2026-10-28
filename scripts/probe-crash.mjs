@@ -1,0 +1,50 @@
+import { spawn } from 'node:child_process';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const [, , urlArg] = process.argv;
+const dir = mkdtempSync(join(tmpdir(), 'chrome-cr-'));
+const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--remote-debugging-port=0', '--user-data-dir=' + dir, '--window-size=1440,900', 'about:blank'], { stdio: ['ignore', 'pipe', 'pipe'] });
+const wsUrl = await new Promise((res, rej) => { let b = ''; const t = setTimeout(() => rej(new Error('no devtools')), 20000); const on = (d) => { b += d; const m = b.match(/DevTools listening on (ws:\/\/\S+)/); if (m) { clearTimeout(t); res(m[1]); } }; chrome.stderr.on('data', on); chrome.stdout.on('data', on); });
+const port = new URL(wsUrl).port;
+const target = await (await fetch('http://127.0.0.1:' + port + '/json/new?about:blank', { method: 'PUT' })).json();
+const ws = new WebSocket(target.webSocketDebuggerUrl);
+await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
+let id = 1; const pending = new Map(); const events = [];
+ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id !== undefined) { const p = pending.get(m.id); if (p) { pending.delete(m.id); m.error ? p.reject(new Error(JSON.stringify(m.error))) : p.resolve(m.result); } return; }
+  if (m.method === 'Runtime.exceptionThrown') events.push('EXC ' + JSON.stringify(m.params.exceptionDetails).slice(0, 900));
+  if (m.method === 'Runtime.consoleAPICalled') events.push('LOG ' + m.params.type + ': ' + m.params.args.map((a) => a.value ?? a.description ?? '').join(' ').slice(0, 900)); };
+const send = (method, params = {}) => new Promise((res, rej) => { const i = id++; pending.set(i, { resolve: res, reject: rej }); ws.send(JSON.stringify({ id: i, method, params })); });
+const ev = async (x) => { const r = await send('Runtime.evaluate', { expression: x, awaitPromise: true, returnByValue: true }); if (r.exceptionDetails) throw new Error(JSON.stringify(r.exceptionDetails).slice(0, 300)); return r.result.value; };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+await send('Page.enable'); await send('Runtime.enable');
+await send('Page.navigate', { url: urlArg });
+for (let i = 0; i < 80; i++) { if (await ev("document.querySelector('button[aria-label=\"工作台\"]') !== null")) break; await sleep(300); }
+const CONTINUE = '继续';
+for (let i = 0; i < 10; i++) { const a = await ev(`(()=>{const b=[...document.querySelectorAll('button')].find(x=>x.textContent.trim()===${JSON.stringify(CONTINUE)});if(b){b.click();return 1}return 0})()`); if (!a) break; await sleep(400); }
+await ev("document.querySelector('button[aria-label=\"工作台\"]').click()");
+for (let i = 0; i < 60; i++) { if (await ev("document.querySelector('[data-wb-panel]') !== null")) break; await sleep(300); }
+await sleep(1200);
+console.log('=== navigate to triage ===');
+await ev("window.location.hash = '#/triage/WB-7'");
+await sleep(2500);
+console.log('TRIAGE DOM: ' + await ev("JSON.stringify({triage:document.querySelectorAll('[data-wb-triage=\"triage\"]').length, body:(document.querySelector('[data-wb-panel]')||document.body).textContent.slice(0,300)})"));
+console.log('EVENTS AFTER TRIAGE:'); for (const e of events.slice(-4)) console.log(e);
+events.length = 0;
+console.log('=== submit flow ===');
+await ev("window.location.hash = '#/progress'");
+await sleep(1000);
+await ev("(()=>{const b=[...document.querySelectorAll('[data-wb-panel] button')].find(x=>x.textContent.includes('新建议题'));if(b)b.click()})()");
+await sleep(900);
+console.log('FORM: ' + await ev("JSON.stringify({selects:[...document.querySelectorAll('[data-wb-dialog-card] select')].map(s=>({value:s.value,options:[...s.options].map(o=>o.value)})),inputs:[...document.querySelectorAll('[data-wb-dialog-card] input')].map(i=>({triage:i.getAttribute('data-wb-triage'),value:i.value}))})"));
+await ev(`(()=>{const i=document.querySelector('[data-wb-triage="title"]');const setter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;setter.call(i,'诊断标题');i.dispatchEvent(new Event('input',{bubbles:true}));return i.value})()`).catch((e) => console.log('set title failed ' + e));
+await ev("(()=>{const s=document.querySelector('[data-wb-dialog-card] select');if(!s)return 'none';const o=[...s.options].find(x=>x.value);s.value=o.value;s.dispatchEvent(new Event('change',{bubbles:true}));return s.value})()").then((v) => console.log('select -> ' + v));
+await ev("(()=>{const c=[...document.querySelectorAll('[data-wb-dialog-card] input')].filter(i=>!i.getAttribute('data-wb-triage'))[0];const setter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;setter.call(c,'标准一');c.dispatchEvent(new Event('input',{bubbles:true}));return c.value})()").then((v) => console.log('criterion -> ' + v));
+await sleep(400);
+console.log('BEFORE SUBMIT: ' + await ev("JSON.stringify({title:document.querySelector('[data-wb-triage=\"title\"]').value,select:document.querySelector('[data-wb-dialog-card] select').value,criteria:[...document.querySelectorAll('[data-wb-dialog-card] input')].filter(i=>!i.getAttribute('data-wb-triage')).map(i=>i.value)})"));
+await ev("(()=>{const b=[...document.querySelectorAll('[data-wb-dialog-card] button')].find(x=>x.textContent.includes('确认立项'));b.click();return true})()");
+await sleep(2200);
+console.log('AFTER SUBMIT: ' + await ev("JSON.stringify({dialogOpen:document.querySelector('[data-wb-dialog-card]')!==null, text:(document.querySelector('[data-wb-dialog-card]')||document.body).textContent.slice(0,400)})"));
+console.log('EVENTS AFTER SUBMIT:'); for (const e of events.slice(-4)) console.log(e);
+ws.close(); chrome.kill('SIGKILL'); process.exit(0);

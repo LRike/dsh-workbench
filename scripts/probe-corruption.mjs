@@ -1,0 +1,33 @@
+// Corruption recovery: boot with a corrupt workbench.json; the host must quarantine it and stay usable.
+import { spawn } from 'node:child_process';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const urlArg = process.argv[2];
+const chrome = spawn(CHROME, ['--headless=new','--disable-gpu','--no-first-run','--remote-debugging-port=0','--user-data-dir=' + mkdtempSync(join(tmpdir(),'chrome-co-')),'--window-size=1440,900','about:blank'], { stdio: ['ignore','pipe','pipe'] });
+const wsUrl = await new Promise((res, rej) => { let b=''; const t=setTimeout(()=>rej(new Error('no devtools')),20000); const on=(d)=>{b+=d;const m=b.match(/DevTools listening on (ws:\/\/\S+)/);if(m){clearTimeout(t);res(m[1]);}}; chrome.stderr.on('data',on); chrome.stdout.on('data',on); });
+const port = new URL(wsUrl).port;
+const target = await (await fetch('http://127.0.0.1:' + port + '/json/new?about:blank', { method: 'PUT' })).json();
+const ws = new WebSocket(target.webSocketDebuggerUrl);
+await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j;});
+let id=1; const pending=new Map(); const errors=[];
+ws.onmessage=(e)=>{const m=JSON.parse(e.data); if(m.id!==undefined){const p=pending.get(m.id); if(p){pending.delete(m.id); m.error?p.reject(new Error(JSON.stringify(m.error))):p.resolve(m.result);} return;} if(m.method==='Runtime.exceptionThrown') errors.push(String((m.params.exceptionDetails.exception||{}).description||'').slice(0,120));};
+const send=(method,params={})=>new Promise((res,rej)=>{const i=id++;pending.set(i,{resolve:res,reject:rej});ws.send(JSON.stringify({id:i,method,params}));});
+const ev=async(x)=>{const r=await send('Runtime.evaluate',{expression:x,awaitPromise:true,returnByValue:true}); if(r.exceptionDetails) return 'ERR '+String((r.exceptionDetails.exception||{}).description||r.exceptionDetails.text).slice(0,160); return r.result.value;};
+const call=async(fn,...args)=>ev('('+fn.toString()+')('+args.map(a=>JSON.stringify(a)).join(',')+')');
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+await send('Page.enable'); await send('Runtime.enable');
+await send('Page.navigate',{url:urlArg});
+await sleep(3600);
+for (let i=0;i<8;i++){const a=await call(()=>{const b=[...document.querySelectorAll('button')].find(x=>(x.textContent||'').trim()==='继续'); if(b){b.click();return 1;} return 0;}); if(!a)break; await sleep(300);}
+const api = await call(async () => { const r = await fetch('/workbench/api/snapshot'); const b = await r.json().catch(() => null); return { status: r.status, ok: b ? b.ok : null, hasData: Boolean(b && b.data), error: b && b.error ? b.error.code : null }; });
+console.log('snapshot after corruption: ' + JSON.stringify(api));
+await call(()=>{const b=document.querySelector('button[aria-label="工作台"]'); if(b)b.click(); return true;});
+await sleep(2200);
+const ui = await call(() => ({ panel: document.querySelectorAll('[data-wb-panel]').length, text: ((document.querySelector('[data-wb-panel]')||{}).textContent||'').slice(0, 60), empty: ((document.querySelector('[data-wb-panel]')||{}).textContent||'').length }));
+console.log('panel after corruption: ' + JSON.stringify(ui));
+console.log('uncaught exceptions: ' + JSON.stringify(errors.slice(0,2)));
+const ok = api.status === 200 && api.ok === true && ui.panel === 1 && ui.empty > 20 && errors.length === 0;
+console.log(ok ? 'CORRUPTION-RECOVERY: OK' : 'CORRUPTION-RECOVERY: PROBLEM');
+ws.close(); chrome.kill('SIGKILL'); process.exit(ok ? 0 : 1);

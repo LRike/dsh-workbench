@@ -1,0 +1,36 @@
+import { spawn } from 'node:child_process';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const [, , urlArg] = process.argv;
+const dir = mkdtempSync(join(tmpdir(), 'chrome-tr-'));
+const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--remote-debugging-port=0', '--user-data-dir=' + dir, '--window-size=1440,900', 'about:blank'], { stdio: ['ignore', 'pipe', 'pipe'] });
+const wsUrl = await new Promise((res, rej) => { let b = ''; const t = setTimeout(() => rej(new Error('no devtools')), 20000); const on = (d) => { b += d; const m = b.match(/DevTools listening on (ws:\/\/\S+)/); if (m) { clearTimeout(t); res(m[1]); } }; chrome.stderr.on('data', on); chrome.stdout.on('data', on); });
+const port = new URL(wsUrl).port;
+const target = await (await fetch('http://127.0.0.1:' + port + '/json/new?about:blank', { method: 'PUT' })).json();
+const ws = new WebSocket(target.webSocketDebuggerUrl);
+await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
+let id = 1; const pending = new Map();
+ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id !== undefined) { const p = pending.get(m.id); if (p) { pending.delete(m.id); m.error ? p.reject(new Error(JSON.stringify(m.error))) : p.resolve(m.result); } } };
+const send = (method, params = {}) => new Promise((res, rej) => { const i = id++; pending.set(i, { resolve: res, reject: rej }); ws.send(JSON.stringify({ id: i, method, params })); });
+const ev = async (x) => { const r = await send('Runtime.evaluate', { expression: x, awaitPromise: true, returnByValue: true }); if (r.exceptionDetails) throw new Error(JSON.stringify(r.exceptionDetails).slice(0, 200)); return r.result.value; };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+await send('Page.enable'); await send('Runtime.enable');
+await send('Page.navigate', { url: urlArg });
+for (let i = 0; i < 80; i++) { if (await ev("document.querySelector('button[aria-label=\"工作台\"]') !== null")) break; await sleep(300); }
+await ev("document.querySelector('button[aria-label=\"工作台\"]').click()");
+for (let i = 0; i < 60; i++) { if (await ev("document.querySelector('[data-wb-panel]') !== null")) break; await sleep(300); }
+await ev("window.location.hash = '#/triage/WB-7'");
+await sleep(2000);
+console.log('INPUTS: ' + await ev("JSON.stringify([...document.querySelectorAll('[data-wb-triage] input')].map((i) => ({ attrs: [...i.attributes].map((a) => a.name + '=' + a.value).join(' '), value: i.value, readOnly: i.readOnly, disabled: i.disabled, rect: (() => { const r = i.getBoundingClientRect(); return Math.round(r.x) + ',' + Math.round(r.y) + ',' + Math.round(r.width); })() })))"));
+await ev("document.querySelector('[data-wb-triage] input')?.focus();");
+await sleep(200);
+console.log('ACTIVE: ' + await ev("document.activeElement ? document.activeElement.outerHTML.slice(0, 120) : 'none'"));
+await send('Input.insertText', { text: 'abc' });
+await sleep(400);
+console.log('AFTER insertText: ' + await ev("document.querySelector('[data-wb-triage] input').value"));
+await ev("const el = document.querySelector('[data-wb-triage] input'); const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set; setter.call(el, 'xyz'); el.dispatchEvent(new Event('input', { bubbles: true }));");
+await sleep(500);
+console.log('AFTER native setter: ' + await ev("document.querySelector('[data-wb-triage] input').value"));
+ws.close(); chrome.kill('SIGKILL'); process.exit(0);
